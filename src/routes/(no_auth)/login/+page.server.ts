@@ -1,19 +1,11 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { delay, getTestUser, hash } from '$functions/util';
+import { fail, redirect } from '@sveltejs/kit'
 
-function delay(time: number) {
-  return new Promise(resolve => setTimeout(resolve, time));
-}
-
-function hash(slug: string) {
-  return slug;
-}
-
-export const actions ={
-  register: async ({ request, cookies, url }) => {
+export const actions = {
+  login: async ({ request, cookies, url}) => {
     const data = await request.formData();
-    const email = data.get('email')
-    const password = data.get('password')
-    const confirmPassword = data.get("confirmPassword")
+    const email = data.get('email');
+    const password = data.get('password');
 
     // Validate form values
     if (!email) {
@@ -22,18 +14,10 @@ export const actions ={
     if (!password) {
       return fail(400, { password, missing: true })
     }
-    if (!confirmPassword) {
-      return fail(400, { confirmPassword, missing: true })
-    }
 
     // Fetch user
-    const user = {
-      email: "sample@email.com",
-      password: "asdf"
-    }
-
+    const user = getTestUser();
     await delay(1000);
-
 
     // Validate user password
     if (!user || user.password !== hash(password.toString())) {
@@ -43,7 +27,6 @@ export const actions ={
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo')?.toString() ?? '/')
     }
-
 
     // get user from db and set cookie
 

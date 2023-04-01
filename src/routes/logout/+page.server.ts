@@ -1,8 +1,5 @@
-import { redirect } from '@sveltejs/kit'
+import type { PageServerLoad } from './$types';
 
-export const actions = {
-    default: ({ cookies }) => {
-        cookies.delete('logged_in', { path: '/' });
-        throw redirect(307, '/');
-    }
-}
+export const load = (async () => {
+    return {};
+}) satisfies PageServerLoad;
